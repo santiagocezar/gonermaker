@@ -1,11 +1,13 @@
 FROM base
 
 COPY fury.repo /etc/yum.repos.d/fury.repo
+COPY fury-nushell.repo /etc/yum.repos.d/fury-nushell.repo
 
-RUN \
+RUN --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
     dnf config-manager setopt install_weak_deps=False && \
     dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo && \
-    dnf copr enable -y atim/nushell && \
     dnf update -y && \
     dnf install -y git just nushell zoxide carapace-bin direnv neovim gh ripgrep bash-completion && \
     true
